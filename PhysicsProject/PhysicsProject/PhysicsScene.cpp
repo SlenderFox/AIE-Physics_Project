@@ -150,18 +150,21 @@ bool PhysicsScene::planeToCircle(PhysicsObject* pObject1, PhysicsObject* pObject
 	{
 		// Projects the circles distance from the origin onto the planes normal
 		glm::vec2 collisionNormal = plane->getNormal();
-		float sphereToPlane = glm::dot(circle->getPosition(), plane->getNormal()) - plane->getDistance();
+		float circleToPlane = glm::dot(circle->getPosition(), plane->getNormal()) - plane->getDistance();
 
 		// If we are behind plane then we flip the normal
-		if (sphereToPlane < 0)
+		if (circleToPlane < 0)
 		{
 			collisionNormal *= -1;
-			sphereToPlane *= -1;
+			circleToPlane *= -1;
 		}
 
-		float intersection = circle->getRadius() - sphereToPlane;
+		float intersection = circle->getRadius() - circleToPlane;
 		if (intersection > 0)
 		{
+			// Resitution
+			circle->setPosition(circle->getPosition() + collisionNormal * intersection);
+
 			plane->resolveCollision(circle);
 			return true;
 		}
@@ -193,9 +196,15 @@ bool PhysicsScene::circleToCircle(PhysicsObject* pObject1, PhysicsObject* pObjec
 	if (!(circle1 == nullptr || circle2 == nullptr))
 	{
 		// Compares the distance between the objects and the combined radius
-		const float distance = glm::distance(circle1->getPosition(), circle2->getPosition());
+		float distance = glm::distance(circle1->getPosition(), circle2->getPosition());
 		if (distance < circle1->getRadius() + circle2->getRadius())
 		{
+			// Resitution
+			distance = circle1->getRadius() + circle2->getRadius() - distance;
+			glm::vec2 collisionNormal = glm::normalize(circle1->getPosition() - circle2->getPosition());
+			circle1->setPosition(circle1->getPosition() + (collisionNormal * distance * 0.5f));
+			circle2->setPosition(circle2->getPosition() - (collisionNormal * distance * 0.5f));
+
 			circle1->resolveCollision(circle2);
 			return true;
 		}

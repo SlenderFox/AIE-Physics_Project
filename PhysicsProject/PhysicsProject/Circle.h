@@ -7,7 +7,7 @@ public:
 	Circle();
 	Circle(glm::vec2 pPosition, glm::vec2 pVelocity,
 		float pRotation, float pAngularVelocity, float pMass,
-		float pLinearDrag, float pAngularDrag,
+		float pLinearDrag, float pAngularDrag, float pElasticity,
 		bool pSolid, bool pWeighted,
 		float pRadius, glm::vec4 pColour);
 	~Circle();

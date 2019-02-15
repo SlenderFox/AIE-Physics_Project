@@ -27,5 +27,5 @@ protected:
 	bool					m_massExampleEnabled;	// Determines whether the collision demonstration is created
 	bool					m_ballChaos;					// Determines whether the ball chaos demonstration is created
 
-	float					m_rocketTimer = 0;			// The timer controlling how often the rocket expels exhaust
+	float					m_rocketTimer;				// The timer controlling how often the rocket expels exhaust
 };

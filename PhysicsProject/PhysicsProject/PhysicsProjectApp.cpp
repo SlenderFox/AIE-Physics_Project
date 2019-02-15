@@ -19,6 +19,9 @@ PhysicsProjectApp::~PhysicsProjectApp()
 
 bool PhysicsProjectApp::startup()
 {
+	srand(time(NULL));
+	m_rocketTimer = 0;
+
 	// Startup options:
 	m_rocketEnabled = false;
 	m_newtonsCradleEnabled = false;
@@ -42,18 +45,19 @@ bool PhysicsProjectApp::startup()
 	m_physicsScene->setGravity(glm::vec2(0, -9.8));
 
 	// Creates a bounding box around the window
-	float PI = 3.14159265f;
+	float PI = 3.14159265358979323846264338327950388f;		// Complete overkill lmao
 	m_physicsScene->addActor(new Plane(glm::vec2(sinf(PI * 0.0f), cosf(PI * 0.0f)), 55.5f, glm::vec4(1, 0, 0, 1)));
 	m_physicsScene->addActor(new Plane(glm::vec2(sinf(PI * 0.5f), cosf(PI * 0.5f)), 99.0f, glm::vec4(0, 1, 0, 1)));
 	m_physicsScene->addActor(new Plane(glm::vec2(sinf(PI * 1.0f), cosf(PI * 1.0f)), 55.5f, glm::vec4(0, 0, 1, 1)));
 	m_physicsScene->addActor(new Plane(glm::vec2(sinf(PI * 1.5f), cosf(PI * 1.5f)), 99.0f, glm::vec4(1, 1, 0, 1)));
+	m_physicsScene->addActor(new Plane(glm::vec2(sinf(PI * 0.25f), cosf(PI * 0.25f)), 0.0f, glm::vec4(1, 1, 1, 1)));
 
 	if (m_rocketEnabled)
 	{
 		// Creates a rocket
 		m_physicsScene->addActor(new Circle(glm::vec2(40, -30), glm::vec2(0, 0),
 			0.0f, 0.0f, 50.0f,
-			0.3f, 0.3f,
+			0.3f, 0.3f, 0.25f,
 			true, true,
 			5.0f, glm::vec4(0.753f, 0.753f, 0.753f, 1)));
 	}
@@ -63,22 +67,22 @@ bool PhysicsProjectApp::startup()
 		// Creates a crappy newtons cradle that only works once
 		m_physicsScene->addActor(new Circle(glm::vec2(-65, -30), glm::vec2(0, 0),
 			0.0f, 0.0f, 2.0f,
-			0.3f, 0.3f,
+			0.3f, 0.3f, 1.0f,
 			true, false,
 			2.0f, glm::vec4(0.31f, 0.141f, 0.071f, 1)));
 		m_physicsScene->addActor(new Circle(glm::vec2(-60, -30), glm::vec2(0, 0),
 			0.0f, 0.0f, 2.0f,
-			0.3f, 0.3f,
+			0.3f, 0.3f, 1.0f,
 			true, false,
 			2.0f, glm::vec4(0.31f, 0.141f, 0.071f, 1)));
 		m_physicsScene->addActor(new Circle(glm::vec2(-55, -30), glm::vec2(0, 0),
 			0.0f, 0.0f, 2.0f,
-			0.3f, 0.3f,
+			0.3f, 0.3f, 1.0f,
 			true, false,
 			2.0f, glm::vec4(0.31f, 0.141f, 0.071f, 1)));
 		m_physicsScene->addActor(new Circle(glm::vec2(-50, -30), glm::vec2(0, 0),
 			0.0f, 0.0f, 2.0f,
-			0.3f, 0.3f,
+			0.3f, 0.3f, 1.0f,
 			true, false,
 			2.0f, glm::vec4(0.31f, 0.141f, 0.071f, 1)));
 	}
@@ -88,133 +92,69 @@ bool PhysicsProjectApp::startup()
 		// Creates a head on collision between 2 circles of the same mass
 		m_physicsScene->addActor(new Circle(glm::vec2(-80, 40), glm::vec2(20, 0),
 			0.0f, 0.0f, 2.0f,
-			0.3f, 0.3f,
+			0.3f, 0.3f, 0.5f,
 			true, false,
 			2.0f, glm::vec4(1, 0, 0, 1)));
 		m_physicsScene->addActor(new Circle(glm::vec2(-40, 40), glm::vec2(-20, 0),
 			0.0f, 0.0f, 2.0f,
-			0.3f, 0.3f,
+			0.3f, 0.3f, 0.5f,
 			true, false,
 			2.0f, glm::vec4(1, 0, 0, 1)));
 
 		// Creates a head on collision between 2 circles of different masses
 		m_physicsScene->addActor(new Circle(glm::vec2(-80, 30), glm::vec2(20, 5),
 			0.0f, 0.0f, 1.8f,
-			0.3f, 0.3f,
+			0.3f, 0.3f, 0.5f,
 			true, false,
 			1.8f, glm::vec4(1, 0, 0, 1)));
 		m_physicsScene->addActor(new Circle(glm::vec2(-40, 30), glm::vec2(-20, 5),
 			0.0f, 0.0f, 3.0f,
-			0.3f, 0.3f,
+			0.3f, 0.3f, 0.5f,
 			true, false,
 			3.0f, glm::vec4(1, 0, 0, 1)));
 	}
 
 	if (m_ballChaos)
 	{
-		bool gravityEnabled = false;
+		int smallBalls = 50;
+		int mediumBalls = 10;
+		int largeBalls = 2;
+		bool gravityEnabled = true;
+		float linearDrag = 0.0f;
+		float elasticity = 0.5f;
 
-		// Creates lots of balls with random attributes
-		m_physicsScene->addActor(new Circle(glm::vec2(-74, -4), glm::vec2(43, 73),
-			0.0f, 0.0f, 11.6f,
-			0.3f, 0.3f,
-			true, gravityEnabled,
-			5.8f, glm::vec4(0.54f, 0.18f, 0.14f, 1)));
-		m_physicsScene->addActor(new Circle(glm::vec2(28, 33), glm::vec2(0.4f, -13),
-			0.0f, 0.0f, 6.2f,
-			0.3f, 0.3f,
-			true, gravityEnabled,
-			3.1f, glm::vec4(0.26f, 0.16f, 0.96f, 1)));
-		m_physicsScene->addActor(new Circle(glm::vec2(-62, 23), glm::vec2(25, -56),
-			0.0f, 0.0f, 3.6f,
-			0.3f, 0.3f,
-			true, gravityEnabled,
-			1.8f, glm::vec4(0.27f, 0.26f, 0.60f, 1)));
-		m_physicsScene->addActor(new Circle(glm::vec2(86, -13), glm::vec2(-10, 12),
-			0.0f, 0.0f, 6.4f,
-			0.3f, 0.3f,
-			true, gravityEnabled,
-			3.2f, glm::vec4(0.17f, 0.27f, 0.76f, 1)));
-		m_physicsScene->addActor(new Circle(glm::vec2(-46, 37), glm::vec2(13, 1.3f),
-			0.0f, 0.0f, 15.4f,
-			0.3f, 0.3f,
-			true, gravityEnabled,
-			7.7f, glm::vec4(0.02f, 0.92f, 0.06f, 1)));
-		m_physicsScene->addActor(new Circle(glm::vec2(-11, 40), glm::vec2(-0.1f, -10),
-			0.0f, 0.0f, 2.6f,
-			0.3f, 0.3f,
-			true, gravityEnabled,
-			1.3f, glm::vec4(0.92f, 0.91f, 0.27f, 1)));
-		m_physicsScene->addActor(new Circle(glm::vec2(-16, 14), glm::vec2(30, 25),
-			0.0f, 0.0f, 18.0f,
-			0.3f, 0.3f,
-			true, gravityEnabled,
-			9.0f, glm::vec4(0.75f, 0.31f, 0.48f, 1)));
-		m_physicsScene->addActor(new Circle(glm::vec2(79, -34), glm::vec2(-34, 93),
-			0.0f, 0.0f, 2.0f,
-			0.3f, 0.3f,
-			true, gravityEnabled,
-			1.0f, glm::vec4(0.76f, 0.17f, 0.35f, 1)));
-		m_physicsScene->addActor(new Circle(glm::vec2(-97, -15), glm::vec2(-34, -17),
-			0.0f, 0.0f, 3.4f,
-			0.3f, 0.3f,
-			true, gravityEnabled,
-			1.7f, glm::vec4(0.25f, 0.91f, 0.94f, 1)));
-		m_physicsScene->addActor(new Circle(glm::vec2(76, 34), glm::vec2(49, 17),
-			0.0f, 0.0f, 10.8f,
-			0.3f, 0.3f,
-			true, gravityEnabled,
-			5.4f, glm::vec4(0.69f, 0.15f, 0.64f, 1)));
-		m_physicsScene->addActor(new Circle(glm::vec2(-43, 25), glm::vec2(78, -25),
-			0.0f, 0.0f, 3.8f,
-			0.3f, 0.3f,
-			true, gravityEnabled,
-			1.6f, glm::vec4(0.07f, 0.54f, 0.27f, 1)));
-		m_physicsScene->addActor(new Circle(glm::vec2(-57, -15), glm::vec2(-43, 27),
-			0.0f, 0.0f, 2.6f,
-			0.3f, 0.3f,
-			true, gravityEnabled,
-			1.3f, glm::vec4(0.17f, 0.26f, 0.69f, 1)));
-		m_physicsScene->addActor(new Circle(glm::vec2(-10, -24), glm::vec2(-17, 35),
-			0.0f, 0.0f, 15.6f,
-			0.3f, 0.3f,
-			true, gravityEnabled,
-			7.8f, glm::vec4(0.54f, 0.34f, 0.51f, 1)));
-		m_physicsScene->addActor(new Circle(glm::vec2(76, 14), glm::vec2(-45, 76),
-			0.0f, 0.0f, 8.6f,
-			0.3f, 0.3f,
-			true, gravityEnabled,
-			4.3f, glm::vec4(0.98f, 0.18f, 0.05f, 1)));
-		m_physicsScene->addActor(new Circle(glm::vec2(45, -28), glm::vec2(-27, 14),
-			0.0f, 0.0f, 10.8f,
-			0.3f, 0.3f,
-			true, gravityEnabled,
-			5.4f, glm::vec4(0.04f, 0.76f, 0.24f, 1)));
-		m_physicsScene->addActor(new Circle(glm::vec2(-79, 16), glm::vec2(-17, 24),
-			0.0f, 0.0f, 2.8f,
-			0.3f, 0.3f,
-			true, gravityEnabled,
-			1.4f, glm::vec4(0.02f, 0.37f, 0.54f, 1)));
-		m_physicsScene->addActor(new Circle(glm::vec2(14, -18), glm::vec2(-15, 27),
-			0.0f, 0.0f, 4.8f,
-			0.3f, 0.3f,
-			true, gravityEnabled,
-			2.4f, glm::vec4(0.17f, 0.94f, 0.14f, 1)));
-		m_physicsScene->addActor(new Circle(glm::vec2(-30, 27), glm::vec2(-25, 76),
-			0.0f, 0.0f, 3.4f,
-			0.3f, 0.3f,
-			true, gravityEnabled,
-			1.7f, glm::vec4(0.27f, 0.53f, 0.64f, 1)));
-		m_physicsScene->addActor(new Circle(glm::vec2(5, -15), glm::vec2(-65, 68),
-			0.0f, 0.0f, 6.0f,
-			0.3f, 0.3f,
-			true, gravityEnabled,
-			3.0f, glm::vec4(0.71f, 0.46f, 0.41f, 1)));
-		m_physicsScene->addActor(new Circle(glm::vec2(-56, 14), glm::vec2(-54, 37),
-			0.0f, 0.0f, 9.2f,
-			0.3f, 0.3f,
-			true, gravityEnabled,
-			4.6f, glm::vec4(0.92f, 0.81f, 0.25f, 1)));
+		// Creates small balls
+		for (int i = 0; i < smallBalls; i++)
+		{
+			m_physicsScene->addActor(new Circle(glm::vec2(rand() % 180 - 90, rand() % 90 - 45),
+				glm::vec2(rand() % 200 - 100, rand() % 200 - 100),
+				0.0f, 0.0f, 11.0f,
+				linearDrag, 3.0f, elasticity,
+				true, gravityEnabled,
+				1.5f, glm::vec4(0, 1, 0, 1)));
+		}
+
+		// Creates medium balls
+		for (int i = 0; i < mediumBalls; i++)
+		{
+			m_physicsScene->addActor(new Circle(glm::vec2(rand() % 180 - 90, rand() % 90 - 45),
+				glm::vec2(rand() % 200 - 100, rand() % 200 - 100),
+				0.0f, 0.0f, 11.0f,
+				linearDrag, 7.0f, elasticity * 0.75f,
+				true, gravityEnabled,
+				3.5f, glm::vec4(0, 0, 1, 1)));
+		}
+
+		// Creates large balls
+		for (int i = 0; i < largeBalls; i++)
+		{
+			m_physicsScene->addActor(new Circle(glm::vec2(rand() % 180 - 90, rand() % 90 - 45),
+				glm::vec2(rand() % 200 - 100, rand() % 200 - 100),
+				0.0f, 0.0f, 11.0f,
+				linearDrag, 11.0f, elasticity * 0.5f,
+				true, gravityEnabled,
+				5.5f, glm::vec4(1, 0, 0, 1)));
+		}
 	}
 
 	return true;
@@ -251,7 +191,7 @@ void PhysicsProjectApp::update(float pDeltaTime)
 				// Creates an exhaust particle at the base of the rocket
 				Circle* rocketExhaust = new Circle(glm::vec2(rocket->getPosition().x, rocket->getPosition().y - 5.5f), glm::vec2(0, 0),
 					0.0f, 0.0f, 1.0f,
-					0.3f, 0.3f,
+					0.3f, 0.3f, 1.0f,
 					false, false,
 					0.25f, glm::vec4(0.961f, 0.961f, 0.961f, 1));
 

@@ -7,7 +7,7 @@ public:
 	Rigidbody();
 	Rigidbody(ShapeType pShapeID, glm::vec2 pPosition, glm::vec2 pVelocity,
 		float pRotation, float pAngularVelocity, float pMass,
-		float pLinearDrag, float pAngularDrag,
+		float pLinearDrag, float pAngularDrag, float pElasticity,
 		bool pSolid, bool pWeighted);
 	~Rigidbody();
 
@@ -37,16 +37,23 @@ public:
 	void setAngular(const float pAngular) { m_angularDrag = pAngular; }
 	float getAngularDrag() const { return m_angularDrag; }
 
-protected:
-	bool			m_isSolid;				// Whether the object can collider
-	bool			m_isWeighted;			// Whether the object is affected by gravity
+	void setElasticity(const float pElasticity) { m_elasticity = pElasticity; }
+	float getElasticity() const { return m_elasticity; }
 
-	glm::vec2	m_position;				// Current position of the object
-	glm::vec2	m_lastPosition;		// The position of the object in the last frame
-	glm::vec2	m_velocity;				// Current velocity of the object
-	float			m_angularVelocity;	// The current rotational velocity of the object
-	float			m_mass;					// Mass of the object
-	float			m_rotation;				// Current rotation of the object
-	float			m_linearDrag;			// The drag causing an object to slow down
-	float			m_angularDrag;		// The drag causing an object to rotate
+protected:
+	bool			m_isSolid;						// Whether the object can collider
+	bool			m_isWeighted;					// Whether the object is affected by gravity
+
+	glm::vec2	m_position;						// Current position of the object
+	glm::vec2	m_lastPosition;				// The position of the object in the last frame
+	glm::vec2	m_velocity;						// Current velocity of the object
+	float			m_angularVelocity;			// The current rotational velocity of the object
+	float			m_mass;							// Mass of the object
+	float			m_rotation;						// Current rotation of the object
+	float			m_linearDrag;					// The drag causing an object to slow down
+	float			m_angularDrag;				// The drag causing an object to rotate
+	float			m_elasticity;					// The amount of energy lost per collision
+
+	float			m_velocityCheckTimer;		// Timer to prevent an object getting locked in place
+	float			m_angularVCheckTimer;		// Timer to prevent an object getting locked in a rotation
 };
