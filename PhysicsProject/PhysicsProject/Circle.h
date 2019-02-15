@@ -6,7 +6,10 @@ class Circle : public Rigidbody
 public:
 	Circle();
 	Circle(glm::vec2 pPosition, glm::vec2 pVelocity,
-		float pMass, float pRadius, glm::vec4 pColour, bool pSolid, bool pWeighted);
+		float pRotation, float pAngularVelocity, float pMass,
+		float pLinearDrag, float pAngularDrag,
+		bool pSolid, bool pWeighted,
+		float pRadius, glm::vec4 pColour);
 	~Circle();
 
 	virtual void makeGizmo();

@@ -109,7 +109,7 @@ static fn collisionFunctionArray[] =
 
 void PhysicsScene::checkForCollision()
 {
-	int actorCount = m_actors.size();
+	int actorCount = (int)m_actors.size();
 
 	// Need to check collisions against all objects except this one
 	for (int outer = 0; outer < actorCount - 1; outer++)
