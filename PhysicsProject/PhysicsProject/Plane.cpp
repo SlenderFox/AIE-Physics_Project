@@ -36,15 +36,14 @@ void Plane::resetPosition()
 {
 }
 
-void Plane::resolveCollision(Rigidbody* pActor2)
+void Plane::resolveCollision(Rigidbody* pActor2, glm::vec2 pContact)
 {
-	float elasticity = 1;
+	// The plane isn't moving, so the relative velocity is just the actors velocity
+	glm::vec2 vRel = pActor2->getVelocity();
+	float e = pActor2->getElasticity();
+	float j = glm::dot(-(1 + e) * (vRel), m_normal) / (1 / pActor2->getMass());
 
-	// Calculate the impulse magnitude
-	float j = glm::dot(-(1 + elasticity) * pActor2->getVelocity(), m_normal) /
-		(1 / pActor2->getMass());
+	glm::vec2 force(m_normal * j);
 
-	glm::vec2 force = m_normal * j;
-
-	pActor2->applyForce(force);
+	pActor2->applyForce(force, pContact - pActor2->getPosition());
 }

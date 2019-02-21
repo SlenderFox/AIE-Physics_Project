@@ -6,18 +6,19 @@ class Rigidbody : public PhysicsObject
 public:
 	Rigidbody();
 	Rigidbody(ShapeType pShapeID, glm::vec2 pPosition, glm::vec2 pVelocity,
-		float pRotation, float pAngularVelocity, float pMass,
-		float pLinearDrag, float pAngularDrag, float pElasticity,
+		float pRotation, float pAngularVelocity,
+		float pMass, float pMoment, float pElasticity,
+		float pLinearDrag, float pAngularDrag,
 		bool pSolid, bool pWeighted);
 	~Rigidbody();
 
 	virtual void fixedUpdate(glm::vec2 pGravity, float pTimeStep);
 	virtual void debug();
-	void applyForce(glm::vec2 pForce);
-	void applyForceToActor(Rigidbody* pActor2, glm::vec2 pForce);
 
-	virtual bool checkCollision(PhysicsObject* pOther) = 0;
-	void resolveCollision(Rigidbody* pActor2);
+	void applyForce(glm::vec2 pForce);
+	void applyForce(glm::vec2 pForce, glm::vec2 pPos);
+	//void applyForceToActor(Rigidbody* pActor2, glm::vec2 pForce, glm::vec2 pPos);
+	void resolveCollision(Rigidbody* pActor2, glm::vec2 pContact, glm::vec2* collisionNormal = nullptr);
 
 	void setPosition(const glm::vec2 pPosition) { m_position = pPosition; }
 	glm::vec2 getPosition() const { return m_position; }
@@ -49,6 +50,7 @@ protected:
 	glm::vec2	m_velocity;						// Current velocity of the object
 	float			m_angularVelocity;			// The current rotational velocity of the object
 	float			m_mass;							// Mass of the object
+	float			m_moment;						// The moment of inertia, basically the rotation version of mass
 	float			m_rotation;						// Current rotation of the object
 	float			m_linearDrag;					// The drag causing an object to slow down
 	float			m_angularDrag;				// The drag causing an object to rotate

@@ -6,14 +6,14 @@ class Circle : public Rigidbody
 public:
 	Circle();
 	Circle(glm::vec2 pPosition, glm::vec2 pVelocity,
-		float pRotation, float pAngularVelocity, float pMass,
-		float pLinearDrag, float pAngularDrag, float pElasticity,
+		float pRotation, float pAngularVelocity,
+		float pMass, float pElasticity,
+		float pLinearDrag, float pAngularDrag,
 		bool pSolid, bool pWeighted,
 		float pRadius, glm::vec4 pColour);
 	~Circle();
 
 	virtual void makeGizmo();
-	virtual bool checkCollision(PhysicsObject* pOther);
 
 	float getRadius() const { return m_radius; }
 	glm::vec4 getColour() const { return m_colour; }

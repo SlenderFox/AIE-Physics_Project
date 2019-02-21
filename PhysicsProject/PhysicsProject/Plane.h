@@ -15,7 +15,7 @@ public:
 	virtual void makeGizmo();
 	virtual void resetPosition();
 
-	void resolveCollision(Rigidbody* pActor2);
+	void resolveCollision(Rigidbody* pActor2, glm::vec2 pContact);
 
 	glm::vec2 getNormal() const { return m_normal; }
 	float getDistance() const { return m_distanceToOrigin; }

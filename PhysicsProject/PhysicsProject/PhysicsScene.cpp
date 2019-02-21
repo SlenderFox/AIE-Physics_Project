@@ -165,7 +165,9 @@ bool PhysicsScene::planeToCircle(PhysicsObject* pObject1, PhysicsObject* pObject
 			// Resitution
 			circle->setPosition(circle->getPosition() + collisionNormal * intersection);
 
-			plane->resolveCollision(circle);
+			glm::vec2 contact = circle->getPosition() + (collisionNormal * -circle->getRadius());
+
+			plane->resolveCollision(circle, contact);
 			return true;
 		}
 	}
@@ -205,7 +207,7 @@ bool PhysicsScene::circleToCircle(PhysicsObject* pObject1, PhysicsObject* pObjec
 			circle1->setPosition(circle1->getPosition() + (collisionNormal * distance * 0.5f));
 			circle2->setPosition(circle2->getPosition() - (collisionNormal * distance * 0.5f));
 
-			circle1->resolveCollision(circle2);
+			circle1->resolveCollision(circle2, 0.5f * (circle1->getPosition() + circle2->getPosition()));
 			return true;
 		}
 	}
