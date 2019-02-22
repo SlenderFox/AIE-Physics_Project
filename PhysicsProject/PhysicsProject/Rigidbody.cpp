@@ -10,7 +10,7 @@
 
 
 Rigidbody::Rigidbody()
-	: PhysicsObject(CIRCLE), m_position(0, 0), m_velocity(0, 0),
+	: PhysicsObject(st_CIRCLE), m_position(0, 0), m_velocity(0, 0),
 	m_rotation(0), m_angularVelocity(0),
 	m_mass(1.0f), m_moment(1.0f), m_elasticity(1.0f),
 	m_linearDrag(0.0f), m_angularDrag(0.0f),

@@ -8,6 +8,7 @@
 #include "PhysicsScene.h"
 #include "Circle.h"
 #include "Plane.h"
+#include "AABB.h"
 
 PhysicsProjectApp::PhysicsProjectApp()
 {
@@ -19,14 +20,14 @@ PhysicsProjectApp::~PhysicsProjectApp()
 
 bool PhysicsProjectApp::startup()
 {
-	srand(time(NULL));
+	srand((unsigned int)time(NULL));
 	m_rocketTimer = 0;
 
 	// Startup options:
 	m_rocketEnabled = false;
 	m_newtonsCradleEnabled = false;
-	m_massExampleEnabled = false;
-	m_ballChaos = true;
+	m_massExampleEnabled = true;
+	m_ballChaos = false;
 	//----------
 
 	// Increase the 2d line count to maximize the number of objects we can draw 
@@ -42,7 +43,7 @@ bool PhysicsProjectApp::startup()
 	// Lower timestep results in higher precision
 	m_physicsScene->setTimeStep(0.01f);
 	// Set gravity to irl gravity
-	m_physicsScene->setGravity(glm::vec2(0, 0));
+	m_physicsScene->setGravity(glm::vec2(0, -9.8));
 
 	// Creates a bounding box around the window
 	float PI = 3.14159265358979323846264338327950388f;		// Complete overkill lmao
@@ -51,6 +52,12 @@ bool PhysicsProjectApp::startup()
 	m_physicsScene->addActor(new Plane(glm::vec2(sinf(PI * 1.0f), cosf(PI * 1.0f)), 55.5f, glm::vec4(0, 0, 1, 1)));
 	m_physicsScene->addActor(new Plane(glm::vec2(sinf(PI * 1.5f), cosf(PI * 1.5f)), 99.0f, glm::vec4(1, 1, 0, 1)));
 	m_physicsScene->addActor(new Plane(glm::vec2(sinf(PI * 0.25f), cosf(PI * 0.25f)), 0.0f, glm::vec4(1, 1, 1, 1)));
+
+	m_physicsScene->addActor(new AABB(glm::vec2(0, 0), glm::vec2(0, 0),
+		50.0f, 1.0f,
+		0,
+		true, true,
+		8.0f, 5.0f, glm::vec4(1, 1, 1, 1)));
 
 	if (m_rocketEnabled)
 	{
@@ -94,33 +101,47 @@ bool PhysicsProjectApp::startup()
 
 	if (m_massExampleEnabled)
 	{
-		// Creates a head on collision between 2 circles of the same mass
-		m_physicsScene->addActor(new Circle(glm::vec2(-80, 40), glm::vec2(20, 0),
-			0.0f, 0.0f,
-			2.0f, 0.5f,
-			0.0f, 0.0f,
-			true, false,
-			2.0f, glm::vec4(1, 0, 0, 1)));
-		m_physicsScene->addActor(new Circle(glm::vec2(-40, 40), glm::vec2(-20, 0),
-			0.0f, 0.0f,
-			2.0f, 0.5f,
-			0.0f, 0.0f,
-			true, false,
-			2.0f, glm::vec4(1, 0, 0, 1)));
+		//// Creates a head on collision between 2 circles of the same mass
+		//m_physicsScene->addActor(new Circle(glm::vec2(-80, 40), glm::vec2(20, 0),
+		//	0.0f, 0.0f,
+		//	2.0f, 0.5f,
+		//	0.0f, 0.0f,
+		//	true, false,
+		//	2.0f, glm::vec4(1, 0, 0, 1)));
+		//m_physicsScene->addActor(new Circle(glm::vec2(-40, 40), glm::vec2(-20, 0),
+		//	0.0f, 0.0f,
+		//	2.0f, 0.5f,
+		//	0.0f, 0.0f,
+		//	true, false,
+		//	2.0f, glm::vec4(1, 0, 0, 1)));
 
-		// Creates a head on collision between 2 circles of different masses
-		m_physicsScene->addActor(new Circle(glm::vec2(-80, 30), glm::vec2(20, 5),
+		//// Creates a head on collision between 2 circles of different masses
+		//m_physicsScene->addActor(new Circle(glm::vec2(-80, 30), glm::vec2(20, 5),
+		//	0.0f, 0.0f,
+		//	1.8f, 0.5f,
+		//	0.0f, 0.0f,
+		//	true, false,
+		//	1.8f, glm::vec4(1, 0, 0, 1)));
+		//m_physicsScene->addActor(new Circle(glm::vec2(-40, 30), glm::vec2(-20, 5),
+		//	0.0f, 0.0f,
+		//	3.0f, 0.5f,
+		//	0.0f, 0.0f,
+		//	true, false,
+		//	3.0f, glm::vec4(1, 0, 0, 1)));
+
+		// Creates a collision of two similar objectes at an offset
+		m_physicsScene->addActor(new Circle(glm::vec2(-90, 23), glm::vec2(20, 0),
 			0.0f, 0.0f,
-			1.8f, 0.5f,
+			2.0f, 0.5f,
 			0.0f, 0.0f,
 			true, false,
-			1.8f, glm::vec4(1, 0, 0, 1)));
-		m_physicsScene->addActor(new Circle(glm::vec2(-40, 30), glm::vec2(-20, 5),
+			2.0f, glm::vec4(1, 0, 0, 1)));
+		m_physicsScene->addActor(new Circle(glm::vec2(-30, 20), glm::vec2(-20, 0),
 			0.0f, 0.0f,
-			3.0f, 0.5f,
+			2.0f, 0.5f,
 			0.0f, 0.0f,
 			true, false,
-			3.0f, glm::vec4(1, 0, 0, 1)));
+			2.0f, glm::vec4(1, 0, 0, 1)));
 	}
 
 	if (m_ballChaos)

@@ -7,9 +7,9 @@
 
 enum ShapeType
 {
-	PLANE = 0,
-	CIRCLE,
-	RECTANGLE
+	st_PLANE = 0,
+	st_CIRCLE,
+	st_AABB
 };
 
 class PhysicsObject

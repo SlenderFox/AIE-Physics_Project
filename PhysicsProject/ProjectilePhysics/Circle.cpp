@@ -4,7 +4,7 @@
 #include <glm\ext.hpp>
 
 Circle::Circle(glm::vec2 position, glm::vec2 velocity, float mass, float radius, glm::vec4 colour, bool solid)
-	: Rigidbody(CIRCLE, position, velocity, 0, mass, solid), m_radius(radius), m_colour(colour)
+	: Rigidbody(st_CIRCLE, position, velocity, 0, mass, solid), m_radius(radius), m_colour(colour)
 {
 }
 

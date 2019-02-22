@@ -3,12 +3,12 @@
 #include "Rigidbody.h"
 
 Plane::Plane()
-	: PhysicsObject(PLANE), m_normal(0, 1), m_distanceToOrigin(0), m_colour(1, 1 ,1 ,1)
+	: PhysicsObject(st_PLANE), m_normal(0, 1), m_distanceToOrigin(0), m_colour(1, 1 ,1 ,1)
 {
 }
 
 Plane::Plane(glm::vec2 pNormal, float pDistance, glm::vec4 pColour)
-	: PhysicsObject(PLANE), m_normal(pNormal), m_distanceToOrigin(pDistance), m_colour(pColour)
+	: PhysicsObject(st_PLANE), m_normal(pNormal), m_distanceToOrigin(pDistance), m_colour(pColour)
 {
 }
 

@@ -29,17 +29,17 @@ public:
 	void checkForCollision();
 
 	// Planes
-	static bool planeToPlane(PhysicsObject* pObject1, PhysicsObject* pObject2);
-	static bool planeToCircle(PhysicsObject* pObject1, PhysicsObject* pObject2);
-	static bool planeToRectangle(PhysicsObject* pObject1, PhysicsObject* pObject2);
+	static bool planeToPlane(PhysicsObject* pPlane1, PhysicsObject* pPlane2);
+	static bool planeToCircle(PhysicsObject* pPlane, PhysicsObject* pCircle);
+	static bool planeToAABB(PhysicsObject* pPlane, PhysicsObject* pAABB);
 	// Circles
-	static bool circleToPlane(PhysicsObject* pObject1, PhysicsObject* pObject2);
-	static bool circleToCircle(PhysicsObject* pObject1, PhysicsObject* pObject2);
-	static bool circleToRectangle(PhysicsObject* pObject1, PhysicsObject* pObject2);
-	// Rectangles
-	static bool RectangleToPlane(PhysicsObject* pObject1, PhysicsObject* pObject2);
-	static bool RectangleToCircle(PhysicsObject* pObject1, PhysicsObject* pObject2);
-	static bool RectangleToRectangle(PhysicsObject* pObject1, PhysicsObject* pObject2);
+	static bool circleToPlane(PhysicsObject* pCircle, PhysicsObject* pPlane);
+	static bool circleToCircle(PhysicsObject* pCircle1, PhysicsObject* pCircle2);
+	static bool circleToAABB(PhysicsObject* pCircle, PhysicsObject* pAABB);
+	// AABBs
+	static bool AABBToPlane(PhysicsObject* pAABB, PhysicsObject* pPlane);
+	static bool AABBToCircle(PhysicsObject* pAABB, PhysicsObject* pCircle);
+	static bool AABBToAABB(PhysicsObject* pAABB1, PhysicsObject* pAABB2);
 
 protected:
 	glm::vec2							m_gravity;		// The gravity of the simulation

@@ -3,9 +3,9 @@
 #include <Gizmos.h>
 
 Circle::Circle()
-	: Rigidbody(CIRCLE, glm::vec2(0, 0), glm::vec2(0, 0),
-		1.0f, 0.5f, 1.0f,
+	: Rigidbody(st_CIRCLE, glm::vec2(0, 0), glm::vec2(0, 0),
 		0, 0,
+		1.0f, 0.5f, 1.0f,
 		0.3f, 0.3f,
 		true, true),
 	m_radius(1.0f), m_colour(glm::vec4(1, 1, 1, 1))
@@ -18,7 +18,7 @@ Circle::Circle(glm::vec2 pPosition, glm::vec2 pVelocity,
 	float pLinearDrag, float pAngularDrag,
 	bool pSolid, bool pWeighted,
 	float pRadius, glm::vec4 pColour)
-	: Rigidbody(CIRCLE, pPosition, pVelocity,
+	: Rigidbody(st_CIRCLE, pPosition, pVelocity,
 		pRotation, pAngularVelocity,
 		pMass, (0.5f * pMass * pRadius * pRadius), pElasticity,
 		pLinearDrag, pAngularDrag,

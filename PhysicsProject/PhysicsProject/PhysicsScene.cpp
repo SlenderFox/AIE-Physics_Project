@@ -102,9 +102,9 @@ typedef bool(*fn)(PhysicsObject*, PhysicsObject*);
 
 static fn collisionFunctionArray[] =
 {
-	PhysicsScene::planeToPlane, PhysicsScene::planeToCircle, PhysicsScene::planeToRectangle,
-	PhysicsScene::circleToPlane, PhysicsScene::circleToCircle, PhysicsScene::circleToRectangle,
-	PhysicsScene::RectangleToPlane, PhysicsScene::RectangleToCircle, PhysicsScene::RectangleToRectangle,
+	PhysicsScene::planeToPlane, PhysicsScene::planeToCircle, PhysicsScene::planeToAABB,
+	PhysicsScene::circleToPlane, PhysicsScene::circleToCircle, PhysicsScene::circleToAABB,
+	PhysicsScene::AABBToPlane, PhysicsScene::AABBToCircle, PhysicsScene::AABBToAABB,
 };
 
 void PhysicsScene::checkForCollision()
@@ -131,16 +131,16 @@ void PhysicsScene::checkForCollision()
 	}
 }
 
-bool PhysicsScene::planeToPlane(PhysicsObject* pObject1, PhysicsObject* pObject2)
+bool PhysicsScene::planeToPlane(PhysicsObject* pPlane1, PhysicsObject* pPlane2)
 {
 	return false;
 }
 
-bool PhysicsScene::planeToCircle(PhysicsObject* pObject1, PhysicsObject* pObject2)
+bool PhysicsScene::planeToCircle(PhysicsObject* pPlane, PhysicsObject* pCircle)
 {
 	// Dynamically casts the physics objects to circle objects
-	Plane* plane = dynamic_cast<Plane*>(pObject1);
-	Circle* circle = dynamic_cast<Circle*>(pObject2);
+	Plane* plane = dynamic_cast<Plane*>(pPlane);
+	Circle* circle = dynamic_cast<Circle*>(pCircle);
 
 	// If one of the objects isnt solid return
 	if (!circle->getSolid())
@@ -174,22 +174,22 @@ bool PhysicsScene::planeToCircle(PhysicsObject* pObject1, PhysicsObject* pObject
 	return false;
 }
 
-bool PhysicsScene::planeToRectangle(PhysicsObject* pObject1, PhysicsObject* pObject2)
+bool PhysicsScene::planeToAABB(PhysicsObject* pPlane, PhysicsObject* pAABB)
 {
 	return false;
 }
 
 // Redundant, call counterpart
-bool PhysicsScene::circleToPlane(PhysicsObject* pObject1, PhysicsObject* pObject2)
+bool PhysicsScene::circleToPlane(PhysicsObject* pCircle, PhysicsObject* pPlane)
 {
-	return planeToCircle(pObject2, pObject1);
+	return planeToCircle(pPlane, pCircle);
 }
 
-bool PhysicsScene::circleToCircle(PhysicsObject* pObject1, PhysicsObject* pObject2)
+bool PhysicsScene::circleToCircle(PhysicsObject* pCircle1, PhysicsObject* pCircle2)
 {
 	// Dynamically casts the physics objects to circle objects
-	Circle* circle1 = dynamic_cast<Circle*>(pObject1);
-	Circle* circle2 = dynamic_cast<Circle*>(pObject2);
+	Circle* circle1 = dynamic_cast<Circle*>(pCircle1);
+	Circle* circle2 = dynamic_cast<Circle*>(pCircle2);
 
 	// If one of the objects isnt solid return
 	if (!circle1->getSolid() || !circle2->getSolid())
@@ -214,24 +214,24 @@ bool PhysicsScene::circleToCircle(PhysicsObject* pObject1, PhysicsObject* pObjec
 	return false;
 }
 
-bool PhysicsScene::circleToRectangle(PhysicsObject* pObject1, PhysicsObject* pObject2)
+bool PhysicsScene::circleToAABB(PhysicsObject* pCircle, PhysicsObject* pAABB)
 {
 	return false;
 }
 
 // Redundant, call counterpart
-bool PhysicsScene::RectangleToPlane(PhysicsObject* pObject1, PhysicsObject* pObject2)
+bool PhysicsScene::AABBToPlane(PhysicsObject* pAABB, PhysicsObject* pPlane)
 {
-	return planeToRectangle(pObject2, pObject1);
+	return planeToAABB(pPlane, pAABB);
 }
 
 // Redundant, call counterpart
-bool PhysicsScene::RectangleToCircle(PhysicsObject* pObject1, PhysicsObject* pObject2)
+bool PhysicsScene::AABBToCircle(PhysicsObject* pAABB, PhysicsObject* pCircle)
 {
-	return circleToRectangle(pObject2, pObject1);
+	return circleToAABB(pCircle, pAABB);
 }
 
-bool PhysicsScene::RectangleToRectangle(PhysicsObject* pObject1, PhysicsObject* pObject2)
+bool PhysicsScene::AABBToAABB(PhysicsObject* pAABB1, PhysicsObject* pAABB2)
 {
 	return false;
 }
