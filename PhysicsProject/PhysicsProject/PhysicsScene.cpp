@@ -5,6 +5,7 @@
 #include "Rigidbody.h"
 #include "Circle.h"
 #include "Plane.h"
+#include "AABB.h"
 
 PhysicsScene::PhysicsScene() : m_timeStep(0.01f), m_gravity(0, 0)
 {
@@ -142,12 +143,12 @@ bool PhysicsScene::planeToCircle(PhysicsObject* pPlane, PhysicsObject* pCircle)
 	Plane* plane = dynamic_cast<Plane*>(pPlane);
 	Circle* circle = dynamic_cast<Circle*>(pCircle);
 
-	// If one of the objects isnt solid return
-	if (!circle->getSolid())
-		return false;
-
 	if (!(plane == nullptr || circle == nullptr))
 	{
+		// If one of the objects isnt solid return
+		if (!circle->getSolid())
+			return false;
+
 		// Projects the circles distance from the origin onto the planes normal
 		glm::vec2 collisionNormal = plane->getNormal();
 		float circleToPlane = glm::dot(circle->getPosition(), plane->getNormal()) - plane->getDistance();
@@ -191,12 +192,12 @@ bool PhysicsScene::circleToCircle(PhysicsObject* pCircle1, PhysicsObject* pCircl
 	Circle* circle1 = dynamic_cast<Circle*>(pCircle1);
 	Circle* circle2 = dynamic_cast<Circle*>(pCircle2);
 
-	// If one of the objects isnt solid return
-	if (!circle1->getSolid() || !circle2->getSolid())
-		return false;
-
 	if (!(circle1 == nullptr || circle2 == nullptr))
 	{
+		// If one of the objects isnt solid return
+		if (!circle1->getSolid() || !circle2->getSolid())
+			return false;
+
 		// Compares the distance between the objects and the combined radius
 		float distance = glm::distance(circle1->getPosition(), circle2->getPosition());
 		if (distance < circle1->getRadius() + circle2->getRadius())
@@ -233,5 +234,118 @@ bool PhysicsScene::AABBToCircle(PhysicsObject* pAABB, PhysicsObject* pCircle)
 
 bool PhysicsScene::AABBToAABB(PhysicsObject* pAABB1, PhysicsObject* pAABB2)
 {
+	AABB* AABB1 = dynamic_cast<AABB*>(pAABB1);
+	AABB* AABB2 = dynamic_cast<AABB*>(pAABB2);
+
+	if (!(AABB1 == nullptr || AABB2 == nullptr))
+	{
+		// If one of the objects isn't solid return
+		if (!AABB1->getSolid() || !AABB2->getSolid())
+			return false;
+
+		// Get the top right and bottom left corners of the AABBs
+		// AABB1 top right
+		glm::vec2 max1(AABB1->getPosition().x + (AABB1->getWidth() * 0.5f),
+			AABB1->getPosition().y + (AABB1->getHeight() * 0.5f));
+		// AABB1 bottom left
+		glm::vec2 min1(AABB1->getPosition().x - (AABB1->getWidth() * 0.5f),
+			AABB1->getPosition().y - (AABB1->getHeight() * 0.5f));
+		// AABB2 top right
+		glm::vec2 max2(AABB2->getPosition().x + (AABB2->getWidth() * 0.5f),
+			AABB2->getPosition().y + (AABB2->getHeight() * 0.5f));
+		// AABB2 bottom left
+		glm::vec2 min2(AABB2->getPosition().x - (AABB2->getWidth() * 0.5f),
+			AABB2->getPosition().y - (AABB2->getHeight() * 0.5f));
+
+		if (min1.x <= max2.x && max1.x >= min2.x && min1.y <= max2.y && max1.y >= min2.y)
+		{
+			float x1 = max2.x - min1.x;
+			float x2 = max1.x - min2.x;
+			float y1 = max2.y - min1.y;
+			float y2 = max1.y - min2.y;
+
+			// Find the lowest value
+			float smallest = x1;
+			if (smallest > x2)
+				smallest = x2;
+			if (smallest > y1)
+				smallest = y1;
+			if (smallest > y2)
+				smallest = y2;
+
+			if (smallest == x1)			// Move right
+			{
+				AABB1->setPosition(AABB1->getPosition() + glm::vec2(1, 0) * smallest * 0.5f);
+				AABB2->setPosition(AABB2->getPosition() - glm::vec2(1, 0) * smallest * 0.5f);
+				AABB1->resolveCollision(AABB2, glm::vec2(1, 0));
+			}
+			else if (smallest == x2)		// Move left
+			{
+				AABB1->setPosition(AABB1->getPosition() + glm::vec2(-1, 0) * smallest * 0.5f);
+				AABB2->setPosition(AABB2->getPosition() - glm::vec2(-1, 0) * smallest * 0.5f);
+				AABB1->resolveCollision(AABB2, glm::vec2(-1, 0));
+			}
+			else if (smallest == y1)		// Move up
+			{
+				AABB1->setPosition(AABB1->getPosition() + glm::vec2(0, 1) * smallest * 0.5f);
+				AABB2->setPosition(AABB2->getPosition() - glm::vec2(0, 1) * smallest * 0.5f);
+				AABB1->resolveCollision(AABB2, glm::vec2(0, 1));
+			}
+			else if (smallest == y2)		// Move down
+			{
+				AABB1->setPosition(AABB1->getPosition() + glm::vec2(0, -1) * smallest * 0.5f);
+				AABB2->setPosition(AABB2->getPosition() - glm::vec2(0, -1) * smallest * 0.5f);
+				AABB1->resolveCollision(AABB2, glm::vec2(0, -1));
+			}
+			return true;
+		}
+
+		//glm::vec2 overlap(0, 0);
+
+		//if (min1.x <= max2.x && max1.x >= min2.x && min1.y <= max2.y && max1.y >= min2.y)
+		//{
+		//	glm::vec2 temp(glm::vec2(max1.x, min1.y) - glm::vec2(min2.x, max2.y));
+
+		//	if ((glm::dot(overlap, overlap) > glm::dot(temp, temp)) || (overlap == glm::vec2(0, 0)))
+		//		overlap = temp;
+		//}
+
+		//if (overlap != glm::vec2(0, 0))
+		//{
+		//	std::cout << overlap.x << ", " << overlap.y << std::endl;
+
+		//	glm::vec2 adjustment = overlap;
+
+		//	if (glm::abs(overlap.x) < glm::abs(overlap.y))
+		//		adjustment *= glm::vec2(-1, 0);
+		//	else
+		//		adjustment *= glm::vec2(0, -1);
+
+		//	std::cout << adjustment.x << ", " << adjustment.y << std::endl;
+
+		//	AABB1->setPosition(AABB1->getPosition() + adjustment / 2.0f);
+		//	AABB2->setPosition(AABB2->getPosition() - adjustment / 2.0f);
+
+		//	//// Testing the relative direction of one object relative to the other to work out which way they should bounce
+		//	if (glm::abs(adjustment.x) > glm::abs(adjustment.y)) // Needs to be adjusted in the x axis
+		//	{
+		//		if (overlap.x > 0)	// Needs to be moved up
+		//			AABB1->resolveCollision(AABB2, glm::vec2(0, 1));
+		//		else	// Needs to be moved down
+		//			AABB1->resolveCollision(AABB2, glm::vec2(0, -1));
+		//	}
+		//	else	 // Needs to be adjusted in the y axis
+		//	{
+		//		if (overlap.y > 0)	// Needs to be moved right
+		//			AABB1->resolveCollision(AABB2, glm::vec2(1, 0));
+		//		else	// Needs to be moved left
+		//			AABB1->resolveCollision(AABB2, glm::vec2(-1, 0));
+		//	}
+
+		//	//AABB1->resolveCollision(AABB2, 0.5f * (AABB1->getPosition() + AABB2->getPosition()));
+
+		//	return true;
+		//}
+	}
 	return false;
 }
