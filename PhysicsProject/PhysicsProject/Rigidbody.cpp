@@ -50,13 +50,13 @@ void Rigidbody::fixedUpdate(glm::vec2 pGravity, float pTimeStep)
 	if (m_angularVCheckTimer < 0.5f)
 		m_angularVCheckTimer += pTimeStep;
 
-	if (m_velocityCheckTimer >= 0.5f && length(m_velocity) < MIN_LINEAR_THRESHOLD)
+	if (m_velocityCheckTimer >= 0.5f && glm::length(m_velocity) < MIN_LINEAR_THRESHOLD)
 	{
 		m_velocity = glm::vec2(0, 0);
 		m_velocityCheckTimer = 0;
 	}
 
-	if (m_angularVCheckTimer >= 0.5f && abs(m_angularVelocity) < MIN_ROTATIONAL_THRESHOLD)
+	if (m_angularVCheckTimer >= 0.5f && glm::abs(m_angularVelocity) < MIN_ROTATIONAL_THRESHOLD)
 	{
 		m_angularVelocity = 0;
 		m_angularVCheckTimer = 0;
@@ -94,10 +94,26 @@ void Rigidbody::applyForce(glm::vec2 pForce, glm::vec2 pPos)
 //	pOtherActor->applyForce(-pForce);
 //}
 
-void Rigidbody::resolveCollision(Rigidbody* pActor2, glm::vec2 pContact, glm::vec2* collisionNormal)
+void Rigidbody::resolveCollision(Rigidbody* pActor2, glm::vec2* pCollisionNormal)
 {
 	// Find the collision normal
-	glm::vec2 normal = glm::normalize(collisionNormal ? *collisionNormal : pActor2->getPosition() - m_position);
+	glm::vec2 normal = glm::normalize(pCollisionNormal ? *pCollisionNormal : pActor2->getPosition() - m_position);
+	glm::vec2 relativeVelocity = pActor2->getVelocity() - m_velocity;
+	
+	float e = (m_elasticity + pActor2->getElasticity()) / 2;
+	float j = glm::dot(-(1 + e) * (relativeVelocity), normal) /
+		glm::dot(normal, normal * ((1 / m_mass) + (1 / pActor2->getMass())));
+
+	glm::vec2 force = normal * j;
+
+	applyForce(-force);
+	pActor2->applyForce(force);
+}
+
+void Rigidbody::resolveCollision(Rigidbody* pActor2, glm::vec2 pContact, glm::vec2* pCollisionNormal)
+{
+	// Find the collision normal
+	glm::vec2 normal = glm::normalize(pCollisionNormal ? *pCollisionNormal : pActor2->getPosition() - m_position);
 	// Find the angle perpendicular to the collision normal
 	glm::vec2 perp(normal.y, -normal.x);
 

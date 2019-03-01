@@ -18,7 +18,8 @@ public:
 	void applyForce(glm::vec2 pForce);
 	void applyForce(glm::vec2 pForce, glm::vec2 pPos);
 	//void applyForceToActor(Rigidbody* pActor2, glm::vec2 pForce, glm::vec2 pPos);
-	void resolveCollision(Rigidbody* pActor2, glm::vec2 pContact, glm::vec2* collisionNormal = nullptr);
+	void resolveCollision(Rigidbody* pActor2, glm::vec2* pCollisionNormal = nullptr);
+	void resolveCollision(Rigidbody* pActor2, glm::vec2 pContact, glm::vec2* pCollisionNormal = nullptr);
 
 	void setPosition(const glm::vec2 pPosition) { m_position = pPosition; }
 	glm::vec2 getPosition() const { return m_position; }
