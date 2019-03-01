@@ -47,11 +47,11 @@ bool PhysicsProjectApp::startup()
 
 	// Creates a bounding box around the window
 	float PI = 3.14159265358979323846264338327950388f;		// Complete overkill lmao
-	m_physicsScene->addActor(new Plane(glm::vec2(sinf(PI * 0.0f), cosf(PI * 0.0f)), 55.5f, glm::vec4(1, 0, 0, 1)));
-	m_physicsScene->addActor(new Plane(glm::vec2(sinf(PI * 0.5f), cosf(PI * 0.5f)), 99.0f, glm::vec4(0, 1, 0, 1)));
-	m_physicsScene->addActor(new Plane(glm::vec2(sinf(PI * 1.0f), cosf(PI * 1.0f)), 55.5f, glm::vec4(0, 0, 1, 1)));
-	m_physicsScene->addActor(new Plane(glm::vec2(sinf(PI * 1.5f), cosf(PI * 1.5f)), 99.0f, glm::vec4(1, 1, 0, 1)));
-	m_physicsScene->addActor(new Plane(glm::vec2(sinf(PI * 0.25f), cosf(PI * 0.25f)), 0.0f, glm::vec4(1, 1, 1, 1)));
+	m_physicsScene->addActor(new Plane(glm::vec2(sinf(PI * 0.0f), cosf(PI * 0.0f)), -55.5f, glm::vec4(1, 0, 0, 1)));
+	m_physicsScene->addActor(new Plane(glm::vec2(sinf(PI * 0.5f), cosf(PI * 0.5f)), -99.0f, glm::vec4(0, 1, 0, 1)));
+	m_physicsScene->addActor(new Plane(glm::vec2(sinf(PI * 1.0f), cosf(PI * 1.0f)), -55.5f, glm::vec4(0, 0, 1, 1)));
+	m_physicsScene->addActor(new Plane(glm::vec2(sinf(PI * 1.5f), cosf(PI * 1.5f)), -99.0f, glm::vec4(1, 1, 0, 1)));
+	m_physicsScene->addActor(new Plane(glm::vec2(sinf(PI * 1.25f), cosf(PI * 1.25f)), 0.0f, glm::vec4(1, 1, 1, 1)));
 
 	m_physicsScene->addActor(new AABB(glm::vec2(-30, 0), glm::vec2(0, -5),
 		50.0f, 1.0f,
