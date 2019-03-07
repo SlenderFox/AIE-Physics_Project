@@ -192,28 +192,24 @@ bool PhysicsScene::planeToAABB(PhysicsObject* pPlane, PhysicsObject* pAABB)
 		//    []
 		// v3  v4
 		// Top left
-		glm::vec2 v1(aabb->getPosition().x - aabb->getWidth() * 0.5f,
-			aabb->getPosition().y + aabb->getHeight() * 0.5f);
+		glm::vec2 v1(aabb->getWidth() * -0.5f, aabb->getHeight() * 0.5f);
 		// Top right
-		glm::vec2 v2(aabb->getPosition().x + aabb->getWidth() * 0.5f,
-			aabb->getPosition().y + aabb->getHeight() * 0.5f);
+		glm::vec2 v2(aabb->getWidth() * 0.5f, aabb->getHeight() * 0.5f);
 		// Bottom right
-		glm::vec2 v3(aabb->getPosition().x + aabb->getWidth() * 0.5f,
-			aabb->getPosition().y - aabb->getHeight() * 0.5f);
+		glm::vec2 v3(aabb->getWidth() * 0.5f, aabb->getHeight() * -0.5f);
 		// Bottom left
-		glm::vec2 v4(aabb->getPosition().x - aabb->getWidth() * 0.5f,
-			aabb->getPosition().y - aabb->getHeight() * 0.5f);
+		glm::vec2 v4(aabb->getWidth() * -0.5f, aabb->getHeight() * -0.5f);
 
 		// Center distance
 		float centerToPlane = glm::dot(aabb->getPosition(), plane->getNormal()) - plane->getDistance();
 		// Top left
-		float v1DistanceToPlane = glm::dot(v1, plane->getNormal()) - plane->getDistance();
+		float v1DistanceToPlane = glm::dot(aabb->getPosition() + v1, plane->getNormal()) - plane->getDistance();
 		// Top right
-		float v2DistanceToPlane = glm::dot(v2, plane->getNormal()) - plane->getDistance();
+		float v2DistanceToPlane = glm::dot(aabb->getPosition() + v2, plane->getNormal()) - plane->getDistance();
 		// Bottom right
-		float v3DistanceToPlane = glm::dot(v3, plane->getNormal()) - plane->getDistance();
+		float v3DistanceToPlane = glm::dot(aabb->getPosition() + v3, plane->getNormal()) - plane->getDistance();
 		// Bottom left
-		float v4DistanceToPlane = glm::dot(v4, plane->getNormal()) - plane->getDistance();
+		float v4DistanceToPlane = glm::dot(aabb->getPosition() + v4, plane->getNormal()) - plane->getDistance();
 
 		float tempv1 = v1DistanceToPlane;
 		if (tempv1 < 0)
@@ -248,11 +244,11 @@ bool PhysicsScene::planeToAABB(PhysicsObject* pPlane, PhysicsObject* pAABB)
 				collisionNormal *= -1;
 				v1DistanceToPlane *= -1;
 			}
-			intersection = glm::length(aabb->getPosition() - v1) - centerToPlane;
+			intersection = glm::abs(glm::dot(v1, collisionNormal)) - glm::abs(centerToPlane);
 			if (intersection > 0)
 			{
 				// Resitution
-				aabb->setPosition(aabb->getPosition() + collisionNormal * intersection);
+				aabb->setPosition(aabb->getPosition() + collisionNormal * -intersection);
 
 				contact = aabb->getPosition() + (collisionNormal * -glm::length(aabb->getPosition() - v1));
 
@@ -268,11 +264,11 @@ bool PhysicsScene::planeToAABB(PhysicsObject* pPlane, PhysicsObject* pAABB)
 				collisionNormal *= -1;
 				v2DistanceToPlane *= -1;
 			}
-			intersection = glm::length(aabb->getPosition() - v2) - centerToPlane;
+			intersection = glm::abs(glm::dot(v2, collisionNormal)) - glm::abs(centerToPlane);
 			if (intersection > 0)
 			{
 				// Resitution
-				aabb->setPosition(aabb->getPosition() + collisionNormal * intersection);
+				aabb->setPosition(aabb->getPosition() + collisionNormal * -intersection);
 
 				contact = aabb->getPosition() + (collisionNormal * -glm::length(aabb->getPosition() - v2));
 
@@ -288,11 +284,11 @@ bool PhysicsScene::planeToAABB(PhysicsObject* pPlane, PhysicsObject* pAABB)
 				collisionNormal *= -1;
 				v3DistanceToPlane *= -1;
 			}
-			intersection = glm::length(aabb->getPosition() - v3) - centerToPlane;
+			intersection = glm::abs(glm::dot(v3, collisionNormal)) - glm::abs(centerToPlane);
 			if (intersection > 0)
 			{
 				// Resitution
-				aabb->setPosition(aabb->getPosition() + collisionNormal * intersection);
+				aabb->setPosition(aabb->getPosition() + collisionNormal * -intersection);
 
 				contact = aabb->getPosition() + (collisionNormal * -glm::length(aabb->getPosition() - v3));
 
@@ -308,11 +304,11 @@ bool PhysicsScene::planeToAABB(PhysicsObject* pPlane, PhysicsObject* pAABB)
 				collisionNormal *= -1;
 				v4DistanceToPlane *= -1;
 			}
-			intersection = glm::length(aabb->getPosition() - v4) - centerToPlane;
+			intersection = glm::abs(glm::dot(v4, collisionNormal)) - glm::abs(centerToPlane);
 			if (intersection > 0)
 			{
 				// Resitution
-				aabb->setPosition(aabb->getPosition() + collisionNormal * intersection);
+				aabb->setPosition(aabb->getPosition() + collisionNormal * -intersection);
 
 				contact = aabb->getPosition() + (collisionNormal * -glm::length(aabb->getPosition() - v4));
 
@@ -321,7 +317,6 @@ bool PhysicsScene::planeToAABB(PhysicsObject* pPlane, PhysicsObject* pAABB)
 			}
 		}
 	}
-
 	return false;
 }
 
@@ -362,6 +357,22 @@ bool PhysicsScene::circleToCircle(PhysicsObject* pCircle1, PhysicsObject* pCircl
 
 bool PhysicsScene::circleToAABB(PhysicsObject* pCircle, PhysicsObject* pAABB)
 {
+	// Dynamically casts the physics objects to circle objects
+	Circle* circle = dynamic_cast<Circle*>(pCircle);
+	AABB* aabb = dynamic_cast<AABB*>(pAABB);
+
+	if (!(circle == nullptr || aabb == nullptr))
+	{
+		// If one of the objects isnt solid return
+		if (!circle->getSolid() || !aabb->getSolid())
+			return false;
+
+		//// get aabb extents
+		//glm::vec2 v1;
+
+		//// test if circle is inside the aabb
+		//if (circle->getPosition())
+	}
 	return false;
 }
 

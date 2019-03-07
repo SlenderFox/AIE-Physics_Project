@@ -53,7 +53,7 @@ bool PhysicsProjectApp::startup()
 	m_physicsScene->addActor(new Plane(glm::vec2(sinf(PI * 1.5f), cosf(PI * 1.5f)), -99.0f, glm::vec4(1, 1, 0, 1)));
 	m_physicsScene->addActor(new Plane(glm::vec2(sinf(PI * 1.25f), cosf(PI * 1.25f)), 0.0f, glm::vec4(1, 1, 1, 1)));
 
-	m_physicsScene->addActor(new AABB(glm::vec2(-30, 0), glm::vec2(0, -5),
+	m_physicsScene->addActor(new AABB(glm::vec2(-30, 0), glm::vec2(0, -10),
 		50.0f, 1.0f,
 		0,
 		true, false,
@@ -65,13 +65,13 @@ bool PhysicsProjectApp::startup()
 		true, false,
 		12.0f, 8.0f, glm::vec4(0.5f, 0.5f, 0.5f, 1)));
 
-	m_physicsScene->addActor(new AABB(glm::vec2(-50, -20), glm::vec2(5, 0),
+	m_physicsScene->addActor(new AABB(glm::vec2(-50, -20), glm::vec2(10, 0),
 		50.0f, 1.0f,
 		0,
 		true, false,
 		12.0f, 8.0f, glm::vec4(0.5f, 0.5f, 0.5f, 1)));
 
-	m_physicsScene->addActor(new AABB(glm::vec2(5, -25), glm::vec2(-5, 0),
+	m_physicsScene->addActor(new AABB(glm::vec2(10, -25), glm::vec2(-10, 0),
 		50.0f, 1.0f,
 		0,
 		true, false,
