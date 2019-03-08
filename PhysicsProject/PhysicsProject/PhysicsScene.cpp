@@ -377,95 +377,7 @@ bool PhysicsScene::circleToAABB(PhysicsObject* pCircle, PhysicsObject* pAABB)
 			glm::vec2 collisionNormal = glm::normalize(circle->getPosition() - aabb->getPosition());
 			circle->setPosition(circle->getPosition() + collisionNormal);
 
-			circle->resolveCollision(aabb, collisionNormal);
-			return true;
-		}
-
-		// Test if the circle should collide with a corner
-		if (!(circle->getPosition().x > aabb->getPosition().x - (aabb->getWidth() * 0.5f)
-			|| circle->getPosition().y < aabb->getPosition().y + (aabb->getHeight() * 0.5f)))
-		{
-			// Gets necessary variables for a circle to point collision
-			glm::vec2 v1(aabb->getPosition().x + aabb->getWidth() * -0.5f, aabb->getPosition().y + aabb->getHeight() * 0.5f);
-			glm::vec2 collisionNormal = glm::normalize(circle->getPosition() - v1);
-			float circleToCorner = glm::length((circle->getPosition() + collisionNormal * circle->getRadius()) - v1);
-
-			float intersection = circle->getRadius() - circleToCorner;
-			if (intersection > 0)
-			{
-				// Resitution
-				circle->setPosition(circle->getPosition() + collisionNormal * intersection);
-
-				glm::vec2 contact = circle->getPosition() + (collisionNormal * -circle->getRadius());
-
-				circle->resolveCollision(aabb, collisionNormal);
-				return true;
-			}
-		}
-		// Top right corner
-		if (!(circle->getPosition().x < aabb->getPosition().x + (aabb->getWidth() * 0.5f)
-			|| circle->getPosition().y < aabb->getPosition().y + (aabb->getHeight() * 0.5f)))
-		{
-			// Gets necessary variables for a circle to point collision
-			glm::vec2 v2(aabb->getPosition().x + aabb->getWidth() * 0.5f, aabb->getPosition().y + aabb->getHeight() * 0.5f);
-			glm::vec2 collisionNormal = glm::normalize(circle->getPosition() - v2);
-			float circleToCorner = glm::length((circle->getPosition() + collisionNormal * circle->getRadius()) - v2);
-
-			float intersection = circle->getRadius() - circleToCorner;
-			if (intersection > 0)
-			{
-				// Resitution
-				circle->setPosition(circle->getPosition() + collisionNormal * intersection);
-
-				glm::vec2 contact = circle->getPosition() + (collisionNormal * -circle->getRadius());
-
-				circle->resolveCollision(aabb, collisionNormal);
-				return true;
-			}
-			return true;
-		}
-		// Bottom left corner
-		if (!(circle->getPosition().x > aabb->getPosition().x - (aabb->getWidth() * 0.5f)
-			|| circle->getPosition().y > aabb->getPosition().y - (aabb->getHeight() * 0.5f)))
-		{
-			// Gets necessary variables for a circle to point collision
-			glm::vec2 v3(aabb->getPosition().x + aabb->getWidth() * 0.5f, aabb->getPosition().y + aabb->getHeight() * -0.5f);
-			glm::vec2 collisionNormal = glm::normalize(circle->getPosition() - v3);
-			float circleToCorner = glm::length((circle->getPosition() + collisionNormal * circle->getRadius()) - v3);
-
-			float intersection = circle->getRadius() - circleToCorner;
-			if (intersection > 0)
-			{
-				// Resitution
-				circle->setPosition(circle->getPosition() + collisionNormal * intersection);
-
-				glm::vec2 contact = circle->getPosition() + (collisionNormal * -circle->getRadius());
-
-				circle->resolveCollision(aabb, collisionNormal);
-				return true;
-			}
-			return true;
-		}
-		// Bottom right corner
-		if (!(circle->getPosition().x < aabb->getPosition().x + (aabb->getWidth() * 0.5f)
-			|| circle->getPosition().y > aabb->getPosition().y - (aabb->getHeight() * 0.5f)))
-		{
-			// Gets necessary variables for a circle to point collision
-			glm::vec2 v4(aabb->getPosition().x + aabb->getWidth() * -0.5f, aabb->getPosition().y + aabb->getHeight() * -0.5f);
-			glm::vec2 collisionNormal = glm::normalize(circle->getPosition() - v4);
-			float circleToCorner = glm::length((circle->getPosition() + collisionNormal * circle->getRadius()) - v4);
-
-			float intersection = circle->getRadius() - circleToCorner;
-			if (intersection > 0)
-			{
-				// Resitution
-				circle->setPosition(circle->getPosition() + collisionNormal * intersection);
-
-				glm::vec2 contact = circle->getPosition() + (collisionNormal * -circle->getRadius());
-
-				circle->resolveCollision(aabb, collisionNormal);
-				return true;
-			}
+			circle->resolveCollision(aabb, &collisionNormal);
 			return true;
 		}
 
@@ -554,6 +466,45 @@ bool PhysicsScene::circleToAABB(PhysicsObject* pCircle, PhysicsObject* pAABB)
 				}
 				return true;
 			}
+		}
+
+		// Test if the circle should collide with a corner
+		// Initialise the variable to store the position of the closest corner
+		glm::vec2 cornerPoint;
+
+		// Top left corner
+		if (!(circle->getPosition().x > aabb->getPosition().x - (aabb->getWidth() * 0.5f)
+			|| circle->getPosition().y < aabb->getPosition().y + (aabb->getHeight() * 0.5f)))
+			cornerPoint = glm::vec2(aabb->getPosition().x - aabb->getWidth() * 0.5f, aabb->getPosition().y + aabb->getHeight() * 0.5f);
+
+		// Top right corner
+		if (!(circle->getPosition().x < aabb->getPosition().x + (aabb->getWidth() * 0.5f)
+			|| circle->getPosition().y < aabb->getPosition().y + (aabb->getHeight() * 0.5f)))
+			cornerPoint = glm::vec2(aabb->getPosition().x + aabb->getWidth() * 0.5f, aabb->getPosition().y + aabb->getHeight() * 0.5f);
+
+		// Bottom right corner
+		if (!(circle->getPosition().x < aabb->getPosition().x + (aabb->getWidth() * 0.5f)
+			|| circle->getPosition().y > aabb->getPosition().y - (aabb->getHeight() * 0.5f)))
+			cornerPoint = glm::vec2 (aabb->getPosition().x + aabb->getWidth() * 0.5f, aabb->getPosition().y - aabb->getHeight() * 0.5f);
+
+		// Bottom left corner
+		if (!(circle->getPosition().x > aabb->getPosition().x - (aabb->getWidth() * 0.5f)
+				|| circle->getPosition().y > aabb->getPosition().y - (aabb->getHeight() * 0.5f)))
+			cornerPoint = glm::vec2(aabb->getPosition().x - aabb->getWidth() * 0.5f, aabb->getPosition().y - aabb->getHeight() * 0.5f);
+
+		// Creates required variables
+		glm::vec2 collisionNormal = glm::normalize(circle->getPosition() - cornerPoint);
+		float circleToCorner = glm::length(circle->getPosition() - cornerPoint);
+
+		float intersection = circle->getRadius() - circleToCorner;
+		if (intersection > 0)
+		{
+			// Resitution
+			circle->setPosition(circle->getPosition() + collisionNormal * intersection * 0.5f);
+			aabb->setPosition(aabb->getPosition() - collisionNormal * intersection * 0.5f);
+
+			circle->resolveCollision(aabb, &collisionNormal);
+			return true;
 		}
 	}
 	return false;

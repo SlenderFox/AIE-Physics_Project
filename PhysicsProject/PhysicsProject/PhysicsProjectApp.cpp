@@ -54,31 +54,31 @@ bool PhysicsProjectApp::startup()
 	m_physicsScene->addActor(new Plane(glm::vec2(sinf(PI * 1.25f), cosf(PI * 1.25f)), 0.0f, glm::vec4(1, 1, 1, 1)));
 
 	m_physicsScene->addActor(new AABB(glm::vec2(-30, 0), glm::vec2(0, -10),
-		50.0f, 1.0f,
+		10.0f, 1.0f,
 		0,
 		true, false,
 		12.0f, 8.0f, glm::vec4(0.5f, 0.5f, 0.5f, 1)));
 
 	m_physicsScene->addActor(new AABB(glm::vec2(-25, -20), glm::vec2(0, 0),
-		50.0f, 1.0f,
+		10.0f, 1.0f,
 		0,
 		true, false,
 		12.0f, 8.0f, glm::vec4(0.5f, 0.5f, 0.5f, 1)));
 
 	m_physicsScene->addActor(new AABB(glm::vec2(-50, -20), glm::vec2(10, 0),
-		50.0f, 1.0f,
+		10.0f, 1.0f,
 		0,
 		true, false,
 		12.0f, 8.0f, glm::vec4(0.5f, 0.5f, 0.5f, 1)));
 
 	m_physicsScene->addActor(new AABB(glm::vec2(10, -25), glm::vec2(-10, 0),
-		50.0f, 1.0f,
+		10.0f, 1.0f,
 		0,
 		true, false,
 		12.0f, 8.0f, glm::vec4(0.5f, 0.5f, 0.5f, 1)));
 
 	m_physicsScene->addActor(new AABB(glm::vec2(-35, -40), glm::vec2(0, 0),
-		50.0f, 1.0f,
+		10.0f, 1.0f,
 		0,
 		true, false,
 		12.0f, 8.0f, glm::vec4(0.5f, 0.5f, 0.5f, 1)));
@@ -156,27 +156,27 @@ bool PhysicsProjectApp::startup()
 		// Creates a collision of two similar objectes at an offset
 		m_physicsScene->addActor(new Circle(glm::vec2(-90, 23), glm::vec2(20, 0),
 			0.0f, 0.0f,
-			2.0f, 0.5f,
+			5.0f, 1.0f,
 			0.0f, 0.0f,
 			true, false,
-			2.0f, glm::vec4(1, 0, 0, 1)));
+			5.0f, glm::vec4(1, 0, 0, 1)));
 		m_physicsScene->addActor(new Circle(glm::vec2(-30, 20), glm::vec2(-20, 0),
 			0.0f, 0.0f,
-			2.0f, 0.5f,
+			5.0f, 1.0f,
 			0.0f, 0.0f,
 			true, false,
-			2.0f, glm::vec4(1, 0, 0, 1)));
+			5.0f, glm::vec4(1, 0, 0, 1)));
 	}
 
 	if (m_ballChaos)
 	{
-		int smallBalls = 50;
+		int smallBalls = 25;
 		int mediumBalls = 10;
-		int largeBalls = 2;
-		bool gravityEnabled = true;
-		float linearDrag = 0.01f;
+		int largeBalls = 5;
+		bool gravityEnabled = false;
+		float linearDrag = 0.0001f;
 		float angularDrag = 0.0f;
-		float elasticity = 0.9f;
+		float elasticity = 1.0f;
 
 		// Creates small balls
 		for (int i = 0; i < smallBalls; i++)
