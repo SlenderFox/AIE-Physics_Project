@@ -164,7 +164,8 @@ bool PhysicsScene::planeToCircle(PhysicsObject* pPlane, PhysicsObject* pCircle)
 		if (intersection > 0)
 		{
 			// Resitution
-			circle->setPosition(circle->getPosition() + collisionNormal * intersection);
+			if (circle->getMass() != INFINITY)
+				circle->setPosition(circle->getPosition() + collisionNormal * intersection);
 
 			glm::vec2 contact = circle->getPosition() + (collisionNormal * -circle->getRadius());
 
@@ -248,7 +249,8 @@ bool PhysicsScene::planeToAABB(PhysicsObject* pPlane, PhysicsObject* pAABB)
 			if (intersection > 0)
 			{
 				// Resitution
-				aabb->setPosition(aabb->getPosition() + collisionNormal * -intersection);
+				if (aabb->getMass() != INFINITY)
+					aabb->setPosition(aabb->getPosition() + collisionNormal * -intersection);
 
 				contact = aabb->getPosition() + (collisionNormal * -glm::length(aabb->getPosition() - v1));
 
@@ -268,7 +270,8 @@ bool PhysicsScene::planeToAABB(PhysicsObject* pPlane, PhysicsObject* pAABB)
 			if (intersection > 0)
 			{
 				// Resitution
-				aabb->setPosition(aabb->getPosition() + collisionNormal * -intersection);
+				if (aabb->getMass() != INFINITY)
+					aabb->setPosition(aabb->getPosition() + collisionNormal * -intersection);
 
 				contact = aabb->getPosition() + (collisionNormal * -glm::length(aabb->getPosition() - v2));
 
@@ -288,7 +291,8 @@ bool PhysicsScene::planeToAABB(PhysicsObject* pPlane, PhysicsObject* pAABB)
 			if (intersection > 0)
 			{
 				// Resitution
-				aabb->setPosition(aabb->getPosition() + collisionNormal * -intersection);
+				if (aabb->getMass() != INFINITY)
+					aabb->setPosition(aabb->getPosition() + collisionNormal * -intersection);
 
 				contact = aabb->getPosition() + (collisionNormal * -glm::length(aabb->getPosition() - v3));
 
@@ -308,7 +312,8 @@ bool PhysicsScene::planeToAABB(PhysicsObject* pPlane, PhysicsObject* pAABB)
 			if (intersection > 0)
 			{
 				// Resitution
-				aabb->setPosition(aabb->getPosition() + collisionNormal * -intersection);
+				if (aabb->getMass() != INFINITY)
+					aabb->setPosition(aabb->getPosition() + collisionNormal * -intersection);
 
 				contact = aabb->getPosition() + (collisionNormal * -glm::length(aabb->getPosition() - v4));
 
@@ -345,8 +350,10 @@ bool PhysicsScene::circleToCircle(PhysicsObject* pCircle1, PhysicsObject* pCircl
 			// Resitution
 			distance = circle1->getRadius() + circle2->getRadius() - distance;
 			glm::vec2 collisionNormal = glm::normalize(circle1->getPosition() - circle2->getPosition());
-			circle1->setPosition(circle1->getPosition() + (collisionNormal * distance * 0.5f));
-			circle2->setPosition(circle2->getPosition() - (collisionNormal * distance * 0.5f));
+			if (circle1->getMass() != INFINITY)
+				circle1->setPosition(circle1->getPosition() + (collisionNormal * distance * 0.5f));
+			if (circle2->getMass() != INFINITY)
+				circle2->setPosition(circle2->getPosition() - (collisionNormal * distance * 0.5f));
 
 			circle1->resolveCollision(circle2, 0.5f * (circle1->getPosition() + circle2->getPosition()));
 			return true;
@@ -375,7 +382,8 @@ bool PhysicsScene::circleToAABB(PhysicsObject* pCircle, PhysicsObject* pAABB)
 		{
 			// Restitution
 			glm::vec2 collisionNormal = glm::normalize(circle->getPosition() - aabb->getPosition());
-			circle->setPosition(circle->getPosition() + collisionNormal);
+			if (circle->getMass() != INFINITY)
+				circle->setPosition(circle->getPosition() + collisionNormal);
 
 			circle->resolveCollision(aabb, &collisionNormal);
 			return true;
@@ -439,29 +447,37 @@ bool PhysicsScene::circleToAABB(PhysicsObject* pCircle, PhysicsObject* pAABB)
 				if (smallest == x1)			// Move right
 				{
 					collisionNormal = glm::vec2(1, 0);
-					aabb->setPosition(aabb->getPosition() + collisionNormal * smallest * 0.5f);
-					circle->setPosition(circle->getPosition() - collisionNormal * smallest * 0.5f);
+					if (aabb->getMass() != INFINITY)
+						aabb->setPosition(aabb->getPosition() + collisionNormal * smallest * 0.5f);
+					if (circle->getMass() != INFINITY)
+						circle->setPosition(circle->getPosition() - collisionNormal * smallest * 0.5f);
 					aabb->resolveCollision(circle, &collisionNormal);
 				}
 				else if (smallest == x2)		// Move left
 				{
 					collisionNormal = glm::vec2(-1, 0);
-					aabb->setPosition(aabb->getPosition() + collisionNormal * smallest * 0.5f);
-					circle->setPosition(circle->getPosition() - collisionNormal * smallest * 0.5f);
+					if (aabb->getMass() != INFINITY)
+						aabb->setPosition(aabb->getPosition() + collisionNormal * smallest * 0.5f);
+					if (circle->getMass() != INFINITY)
+						circle->setPosition(circle->getPosition() - collisionNormal * smallest * 0.5f);
 					aabb->resolveCollision(circle, &collisionNormal);
 				}
 				else if (smallest == y1)		// Move up
 				{
 					collisionNormal = glm::vec2(0, 1);
-					aabb->setPosition(aabb->getPosition() + collisionNormal * smallest * 0.5f);
-					circle->setPosition(circle->getPosition() - collisionNormal * smallest * 0.5f);
+					if (aabb->getMass() != INFINITY)
+						aabb->setPosition(aabb->getPosition() + collisionNormal * smallest * 0.5f);
+					if (circle->getMass() != INFINITY)
+						circle->setPosition(circle->getPosition() - collisionNormal * smallest * 0.5f);
 					aabb->resolveCollision(circle, &collisionNormal);
 				}
 				else if (smallest == y2)		// Move down
 				{
 					collisionNormal = glm::vec2(0, -1);
-					aabb->setPosition(aabb->getPosition() + collisionNormal * smallest * 0.5f);
-					circle->setPosition(circle->getPosition() - collisionNormal * smallest * 0.5f);
+					if (aabb->getMass() != INFINITY)
+						aabb->setPosition(aabb->getPosition() + collisionNormal * smallest * 0.5f);
+					if (circle->getMass() != INFINITY)
+						circle->setPosition(circle->getPosition() - collisionNormal * smallest * 0.5f);
 					aabb->resolveCollision(circle, &collisionNormal);
 				}
 				return true;
@@ -500,8 +516,10 @@ bool PhysicsScene::circleToAABB(PhysicsObject* pCircle, PhysicsObject* pAABB)
 		if (intersection > 0)
 		{
 			// Resitution
-			circle->setPosition(circle->getPosition() + collisionNormal * intersection * 0.5f);
-			aabb->setPosition(aabb->getPosition() - collisionNormal * intersection * 0.5f);
+			if (circle->getMass() != INFINITY)
+				circle->setPosition(circle->getPosition() + collisionNormal * intersection * 0.5f);
+			if (aabb->getMass() != INFINITY)
+				aabb->setPosition(aabb->getPosition() - collisionNormal * intersection * 0.5f);
 
 			circle->resolveCollision(aabb, &collisionNormal);
 			return true;
@@ -568,29 +586,37 @@ bool PhysicsScene::AABBToAABB(PhysicsObject* pAABB1, PhysicsObject* pAABB2)
 			if (smallest == x1)			// Move right
 			{
 				collisionNormal = glm::vec2(1, 0);
-				aabb1->setPosition(aabb1->getPosition() + collisionNormal * smallest * 0.5f);
-				aabb2->setPosition(aabb2->getPosition() - collisionNormal * smallest * 0.5f);
+				if (aabb1->getMass() != INFINITY)
+					aabb1->setPosition(aabb1->getPosition() + collisionNormal * smallest * 0.5f);
+				if (aabb2->getMass() != INFINITY)
+					aabb2->setPosition(aabb2->getPosition() - collisionNormal * smallest * 0.5f);
 				aabb1->resolveCollision(aabb2, &collisionNormal);
 			}
 			else if (smallest == x2)		// Move left
 			{
 				collisionNormal = glm::vec2(-1, 0);
-				aabb1->setPosition(aabb1->getPosition() + collisionNormal * smallest * 0.5f);
-				aabb2->setPosition(aabb2->getPosition() - collisionNormal * smallest * 0.5f);
+				if (aabb1->getMass() != INFINITY)
+					aabb1->setPosition(aabb1->getPosition() + collisionNormal * smallest * 0.5f);
+				if (aabb2->getMass() != INFINITY)
+					aabb2->setPosition(aabb2->getPosition() - collisionNormal * smallest * 0.5f);
 				aabb1->resolveCollision(aabb2, &collisionNormal);
 			}
 			else if (smallest == y1)		// Move up
 			{
 				collisionNormal = glm::vec2(0, 1);
-				aabb1->setPosition(aabb1->getPosition() + collisionNormal * smallest * 0.5f);
-				aabb2->setPosition(aabb2->getPosition() - collisionNormal * smallest * 0.5f);
+				if (aabb1->getMass() != INFINITY)
+					aabb1->setPosition(aabb1->getPosition() + collisionNormal * smallest * 0.5f);
+				if (aabb2->getMass() != INFINITY)
+					aabb2->setPosition(aabb2->getPosition() - collisionNormal * smallest * 0.5f);
 				aabb1->resolveCollision(aabb2, &collisionNormal);
 			}
 			else if (smallest == y2)		// Move down
 			{
 				collisionNormal = glm::vec2(0, -1);
-				aabb1->setPosition(aabb1->getPosition() + collisionNormal * smallest * 0.5f);
-				aabb2->setPosition(aabb2->getPosition() - collisionNormal * smallest * 0.5f);
+				if (aabb1->getMass() != INFINITY)
+					aabb1->setPosition(aabb1->getPosition() + collisionNormal * smallest * 0.5f);
+				if (aabb2->getMass() != INFINITY)
+					aabb2->setPosition(aabb2->getPosition() - collisionNormal * smallest * 0.5f);
 				aabb1->resolveCollision(aabb2, &collisionNormal);
 			}
 			return true;

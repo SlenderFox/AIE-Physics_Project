@@ -27,7 +27,7 @@ bool PhysicsProjectApp::startup()
 	m_rocketEnabled = false;
 	m_newtonsCradleEnabled = false;
 	m_massExampleEnabled = true;
-	m_ballChaos = false;
+	m_ballChaos = true;
 	//----------
 
 	// Increase the 2d line count to maximize the number of objects we can draw 
@@ -52,6 +52,12 @@ bool PhysicsProjectApp::startup()
 	m_physicsScene->addActor(new Plane(glm::vec2(sinf(PI * 1.0f), cosf(PI * 1.0f)), -55.5f, glm::vec4(0, 0, 1, 1)));
 	m_physicsScene->addActor(new Plane(glm::vec2(sinf(PI * 1.5f), cosf(PI * 1.5f)), -99.0f, glm::vec4(1, 1, 0, 1)));
 	m_physicsScene->addActor(new Plane(glm::vec2(sinf(PI * 1.25f), cosf(PI * 1.25f)), 0.0f, glm::vec4(1, 1, 1, 1)));
+
+	m_physicsScene->addActor(new AABB(glm::vec2(-80, -40), glm::vec2(0, 0),
+		INFINITY, 1.0f,
+		0,
+		true, false,
+		10.0f, 10.0f, glm::vec4(1, 1, 1, 1)));
 
 	m_physicsScene->addActor(new AABB(glm::vec2(-30, 0), glm::vec2(0, -10),
 		10.0f, 1.0f,
