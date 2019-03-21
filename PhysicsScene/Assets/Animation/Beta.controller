@@ -21,13 +21,13 @@ AnimatorController:
     m_IKPass: 0
     m_SyncedLayerAffectsTiming: 0
     m_Controller: {fileID: 9100000}
---- !u!1102 &1102804533532821084
+--- !u!1102 &1102030324302492964
 AnimatorState:
   serializedVersion: 5
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: walking
+  m_Name: Walking
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []
@@ -55,15 +55,15 @@ AnimatorStateMachine:
   m_Name: Base Layer
   m_ChildStates:
   - serializedVersion: 1
-    m_State: {fileID: 1102804533532821084}
-    m_Position: {x: 240, y: 0, z: 0}
+    m_State: {fileID: 1102030324302492964}
+    m_Position: {x: 360, y: 0, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
   m_StateMachineTransitions: {}
   m_StateMachineBehaviours: []
-  m_AnyStatePosition: {x: 36, y: 0, z: 0}
-  m_EntryPosition: {x: 36, y: 48, z: 0}
-  m_ExitPosition: {x: 36, y: 96, z: 0}
+  m_AnyStatePosition: {x: 120, y: 0, z: 0}
+  m_EntryPosition: {x: 120, y: 48, z: 0}
+  m_ExitPosition: {x: 120, y: 96, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
-  m_DefaultState: {fileID: 1102804533532821084}
+  m_DefaultState: {fileID: 1102030324302492964}
