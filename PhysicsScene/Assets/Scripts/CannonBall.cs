@@ -6,7 +6,6 @@ using UnityEngine;
 public class CannonBall : MonoBehaviour
 {
     public float forceOnFire = 9000;
-    bool fire = false;
     bool canFire = true;
     Rigidbody _rigidbody = null;
 
@@ -19,7 +18,7 @@ public class CannonBall : MonoBehaviour
     // Update is called once per frame
     void Update ()
     {
-        if (Input.anyKeyDown && canFire)
+        if (Input.GetKeyDown(KeyCode.Space) && canFire)
         {
             _rigidbody.isKinematic = false;
             _rigidbody.AddForce(transform.right * forceOnFire);

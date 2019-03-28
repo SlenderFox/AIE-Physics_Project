@@ -6,6 +6,33 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
+    path: Assets/_Scenes/01 Cube Scene.unity
+    guid: 3293e107c840a0b4380896cdef6ee3ef
+  - enabled: 1
+    path: Assets/_Scenes/02 Bouncing Scene.unity
+    guid: 36f7152e9fe710841890375b9ac44d0a
+  - enabled: 1
+    path: Assets/_Scenes/03 Destroying Scene.unity
+    guid: 033b534d922d7e948b2a65f8388283c9
+  - enabled: 1
+    path: Assets/_Scenes/04 Chair Scene.unity
+    guid: 9e7b6aa4c7475504f80bc2a4f88ee99b
+  - enabled: 1
+    path: Assets/_Scenes/05 Concave demo.unity
+    guid: 0dbaf7a74b1385b4e88be3bb4746f58a
+  - enabled: 1
+    path: Assets/_Scenes/06 Chair World.unity
+    guid: 0e5b1b5c779aaa241a9895a45aa4c3f7
+  - enabled: 1
+    path: Assets/_Scenes/07 Wrecking ball.unity
+    guid: e96a2524cc0329d4cbc7dfbea0355ec3
+  - enabled: 1
+    path: Assets/_Scenes/08 Ragdoll.unity
+    guid: b4e8ba12dd1302140aefebe60ecc534f
+  - enabled: 1
+    path: Assets/_Scenes/09 Character Controller.unity
+    guid: 323c4e281f6a89041b2ea56696fabc12
+  - enabled: 1
+    path: Assets/_Scenes/10 Raycast.unity
+    guid: f4de74dca4b4d7c48b648b5bb4cc36ca
   m_configObjects: {}

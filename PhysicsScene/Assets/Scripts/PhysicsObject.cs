@@ -17,13 +17,7 @@ public class PhysicsObject : MonoBehaviour
     {
         _rigidbody = GetComponent<Rigidbody>();
     }
-
-    // Update is called once per frame
-    void Update ()
-    {
-
-    }
-
+    
     private void FixedUpdate()
     {
         if (_rigidbody.IsSleeping() && !wasSleeping && sleepMaterial != null)

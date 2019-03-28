@@ -7,15 +7,10 @@ public class Spawner : MonoBehaviour
     public GameObject prefab;
     private float timer = 0;
 
-    // Use this for initialization
-    void Start ()
-    {
-    }
-
     // Update is called once per frame
     void Update ()
     {
-        if (Input.anyKey == true && timer >= 0.2f)
+        if (Input.GetKey(KeyCode.Space) && timer >= 0.2f)
         {
             GameObject newObj = Instantiate(prefab, transform.position, Quaternion.identity);
             Rigidbody rb = newObj.GetComponent<Rigidbody>();

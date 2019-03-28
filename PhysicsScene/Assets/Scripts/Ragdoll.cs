@@ -29,9 +29,4 @@ public class Ragdoll : MonoBehaviour
         foreach (Rigidbody r in rigidbodies)
             r.isKinematic = true;
     }
-
-    // Update is called once per frame
-    void Update ()
-    {
-    }
 } 

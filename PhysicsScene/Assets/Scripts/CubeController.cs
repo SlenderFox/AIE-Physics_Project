@@ -12,12 +12,6 @@ public class CubeController : MonoBehaviour
     public float detectDistance = 1.0f;
     public float speed = 5.0f;
 
-	// Use this for initialization
-	void Start ()
-    {
-		
-	}
-
     private void FixedUpdate()
     {
         // Moves the box around
